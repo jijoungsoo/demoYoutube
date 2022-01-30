@@ -5,6 +5,7 @@ import Avatar from 'antd/lib/avatar/avatar';
 import { useParams } from 'react-router-dom';
 import SideVideo from './Sections/SideVideo'
 import Subscribe from './Sections/Subscribe'
+import Comment from './Sections/Comment'
 
 function VideoDetailPage() {
 
@@ -13,6 +14,9 @@ function VideoDetailPage() {
     const variables = {videoId: videoId}
 
     const [VideoDetail, setVideoDetail] = useState([]);
+    const [Comments, setComments] = useState([]);
+
+    //const [Comment, setComment] = useState([]);
 
     useEffect(() => {
         Axios.post('/api/video/getVideoDetail',variables)
@@ -26,10 +30,30 @@ function VideoDetailPage() {
             }
 
         })
+
+        Axios.post('/api/comment/getComment',variables)
+        .then((response) => {
+            if(response.data.success) {
+                console.log(response.data)
+                setComments(response.data.comments)
+
+            } else {
+                alert('코멘트정보를 가져오는것을 실패했습니다.')
+            }
+
+        })
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    const refresFunction =(newComment) => {
+        setComments(Comments.concat(newComment))
+
+    }
+
     if(VideoDetail.writer){
+
+        const subscribeButton = VideoDetail.writer._id !== localStorage.getItem("userId") && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />
         return (<div>
                 <Row gutters={[16,16]}>
                     <Col lg={18} xs={24}>
@@ -37,9 +61,8 @@ function VideoDetailPage() {
                             <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
         
                             <List.Item
-                            actions={[<Subscribe userTo={VideoDetail.writer._id}
-                                                 userFrom={localStorage.getItem('userId')}
-                                />]}
+                            actions={[ subscribeButton
+                                ]}
                             >
                                 
                                 <List.Item.Meta
@@ -51,6 +74,8 @@ function VideoDetailPage() {
                                 </List.Item.Meta>
         
                             </List.Item>
+
+                            <Comment refresFunction={refresFunction} commentLists={Comments} postId={videoId} />
         
                         </div>
         
