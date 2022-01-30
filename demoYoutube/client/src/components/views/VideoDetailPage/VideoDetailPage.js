@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import SideVideo from './Sections/SideVideo'
 import Subscribe from './Sections/Subscribe'
 import Comment from './Sections/Comment'
+import LikeDislikes from './Sections/LikeDislikes'
 
 function VideoDetailPage() {
 
@@ -61,7 +62,7 @@ function VideoDetailPage() {
                             <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
         
                             <List.Item
-                            actions={[ subscribeButton
+                            actions={[ <LikeDislikes  video  userId={localStorage.getItem('userId')} videoId={videoId} />, subscribeButton
                                 ]}
                             >
                                 
@@ -94,3 +95,4 @@ function VideoDetailPage() {
 }
 
 export default VideoDetailPage;
+

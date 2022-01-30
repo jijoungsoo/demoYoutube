@@ -2,6 +2,7 @@ import Axios from 'axios';
 import React,{useState} from 'react';
 import {Comment,Avatar,Button,Input} from 'antd'
 import {useSelector} from 'react-redux'
+import LikeDislikes from './LikeDislikes'
 
 
 function SingleComment(props) {
@@ -52,7 +53,7 @@ function SingleComment(props) {
   return (
   <div> 
       <Comment 
-        actions={actions}
+        actions={[<LikeDislikes commentId={props.comment._id} userId={localStorage.getItem('userId')} />,actions]}
         author={props.comment.writer.name}
         avatar={<Avatar src={props.comment.writer.image} alt/>}
         content={<p>{props.comment.content}</p>}
